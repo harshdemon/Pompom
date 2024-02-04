@@ -47,7 +47,7 @@ This Bot Can Search PornHub
 Videos & Download Them For You
 
 Can Also Download Files through
-Link of Google Drive & Mega
+Link of Mega & YouTube
 ━━━━━━━━━━━━━━━━━━━━━
 ⚠️The Bot Contains 18+ Content
 So Kindly Access it with Your own
@@ -73,7 +73,7 @@ Click The Buttons Below To Search
     HELP_TXT = """
 Tʜɪs Bᴏᴛ Wɪʟʟ Hᴇʟᴘ Yᴏᴜ Tᴏ Dᴏᴡɴʟᴏᴀᴅ Fᴏʟʟᴏᴡɪɴɢ Fɪʟᴇ ᴛʜʀᴏᴜɢʜ ʟɪɴᴋs:
 
-⊚ Google Drive
+⊚ YouTube
 ⊚ Mega
 ⊚ PornHub
 
@@ -88,3 +88,4 @@ Tʜɪs Bᴏᴛ Wɪʟʟ Hᴇʟᴘ Yᴏᴜ Tᴏ Dᴏᴡɴʟᴏᴀᴅ Fᴏʟʟᴏ�
 ┣⪼ 🚀 Sᴩᴇᴇᴅ: {3}/s
 ┣⪼ ⏰️ Eᴛᴀ: {4}
 ╰━━━━━━━━━━━━━━━➣ </b>"""
+
