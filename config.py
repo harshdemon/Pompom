@@ -23,10 +23,6 @@ class Config(object):
     AUTH_CHANNEL = int(FORCE_SUB) if FORCE_SUB and id_pattern.search(
     FORCE_SUB) else None
     LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", "")) # ⚠️ Required
-    FLOOD = int(os.environ.get("FLOOD", '10'))
-    BANNED_USERS = set(int(x) for x in os.environ.get("BANNED_USERS", "1234567890").split())
-    IS_PUBLIC_BOT = bool(os.environ.get("IS_PUBLIC_BOT", True))
-    AUTH_USERS = set(int(x) for x in os.environ.get("AUTH_USERS", "").split())
 
     
     # Mega User Account ⚠️ Only Set When you have Pro or Enterprise Mega Account
