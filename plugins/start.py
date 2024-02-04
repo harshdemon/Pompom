@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 @Client.on_message(filters.private)
 async def _(bot: Client, cmd: Message):
-
+    await db.add(bot, cmd)
     if not await is_subscribed(bot, cmd):
         return await force_sub(bot, cmd)
     await handle_user_status(bot, cmd)
