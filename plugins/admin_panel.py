@@ -1,3 +1,4 @@
+import traceback
 from config import Config
 from helper.database import db
 from pyrogram.types import Message
@@ -72,7 +73,7 @@ async def send_msg(user_id, message):
         return 500
  
 
-@Client.on_message(filters.private & filters.command("ban_user") & filters.user(Config.BOT_OWNER))
+@Client.on_message(filters.private & filters.command("ban_user") & filters.user(Config.ADMIN))
 async def ban(c: Client, m: Message):
 
     if len(m.command) == 1:
@@ -116,7 +117,7 @@ async def ban(c: Client, m: Message):
         )
 
 
-@Client.on_message(filters.private & filters.command("unban_user") & filters.user(Config.BOT_OWNER))
+@Client.on_message(filters.private & filters.command("unban_user") & filters.user(Config.ADMIN))
 async def unban(c: Client, m: Message):
 
     if len(m.command) == 1:
@@ -155,7 +156,7 @@ async def unban(c: Client, m: Message):
         )
 
 
-@Client.on_message(filters.private & filters.command("banned_users") & filters.user(Config.BOT_OWNER))
+@Client.on_message(filters.private & filters.command("banned_users") & filters.user(Config.ADMIN))
 async def _banned_users(_, m: Message):
 
     all_banned_users = await db.get_all_banned_users()
