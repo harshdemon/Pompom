@@ -1,7 +1,6 @@
 import datetime
 import motor.motor_asyncio
 from config import Config
-from .utils import send_log
 
 
 class Database:
@@ -31,12 +30,9 @@ class Database:
         user = await self.col.find_one({'id': int(id)})
         return user.get('caption', None)
 
-    async def add_user(self, b, m):
-        u = m.from_user
-        if not await self.is_user_exist(u.id):
-            user = self.new_user(u.id)
-            await self.col.insert_one(user)            
-            await send_log(b, u)
+    async def add_user(self, id):
+        user = self.new_user(id)
+        await self.col.insert_one(user)
 
     async def is_user_exist(self, id):
         user = await self.col.find_one({'id': int(id)})
