@@ -22,7 +22,6 @@ async def _(bot: Client, cmd: Message):
 async def start(client, message):
 
     user = message.from_user
-    await db.add_user(client, message)
     button = InlineKeyboardMarkup([[
         InlineKeyboardButton(
             '⛅ Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/+HzGpLAZXTxoyYTNl'),
