@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 @Client.on_message(filters.private)
 async def _(bot: Client, cmd: Message):
-    
+
     if not await is_subscribed(bot, cmd):
         return await force_sub(bot, cmd)
     await handle_user_status(bot, cmd)
@@ -20,6 +20,7 @@ async def _(bot: Client, cmd: Message):
 
 @Client.on_message(filters.private & filters.command("start"))
 async def start(client, message):
+
     user = message.from_user
     await db.add_user(client, message)
     button = InlineKeyboardMarkup([[
