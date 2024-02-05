@@ -68,7 +68,7 @@ async def down_multiple(bot, update, link_msg):
 
     else:
         index += 1
-        await ytdl_downloads(bot, update, queue_links[user_id][index])
+        await down_multiple(bot, update, queue_links[user_id][index])
 
 @Client.on_message(filters.regex(pattern=r"https://\S+"))
 async def handle_yt_dl(bot: Client, cmd: Message):
