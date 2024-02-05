@@ -60,7 +60,7 @@ async def song(client: Client, update:CallbackQuery):
             audio_file = ydl.prepare_filename(info_dict)
             ydl.process_info(info_dict)
 
-        cap = "**BY›› [K-Lᴀɴᴅ](https://t.me/Kdramaland)**"
+        cap = "\n**BY › [K-Lᴀɴᴅ](https://t.me/Kdramaland)**"
         secmul, dur, dur_arr = 1, 0, duration.split(':')
         for i in range(len(dur_arr)-1, -1, -1):
             dur += (int(dur_arr[i]) * secmul)
