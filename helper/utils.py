@@ -109,6 +109,21 @@ def get_thumbnail_url(video_url):
         except Exception as e:
             return None
 
+def get_porn_thumbnail_url(video_url):
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info_dict = ydl.extract_info(video_url, download=False)
+        try:
+            # print(info_dict)
+            thumbnail_url = info_dict['thumbnail']
+            return thumbnail_url
+        except Exception as e:
+            print(e)
+            return None
+
 
 async def run_async(func, *args, **kwargs):
     loop = asyncio.get_running_loop()
@@ -143,7 +158,11 @@ async def ytdl_downloads(bot, update, http_link):
     msg = await update.message.edit(f"**Link:-** {http_link}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...", disable_web_page_preview=True)
 
     # Set options for youtube-dl
-    thumbnail = get_thumbnail_url(http_link)
+    if str(http_link).startswith("https://www.pornhub"):
+        thumbnail = get_porn_thumbnail_url(http_link)
+    else:
+        thumbnail = get_thumbnail_url(http_link)
+
     ytdl_opts = {
         'format': 'best',
         'progress_hooks': [lambda d: download_progress_hook(d, msg, http_link)],
