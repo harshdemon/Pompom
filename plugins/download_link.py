@@ -8,6 +8,7 @@ from youtube_dl import DownloadError
 import youtube_dl
 import requests
 import uuid
+import asnycio
 from config import Config
 from helper.utils import get_porn_thumbnail_url
 
@@ -30,9 +31,10 @@ async def down_multiple(bot, update, link_msg):
         'format': 'best',
         'progress_hooks': [lambda d: download_progress_hook(d, msg, queue_links[user_id][index])],
     }
+    loop = asyncio.get_event_loop()
     with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
         try:
-           ydl.download([queue_links[user_id][index]])
+           await loop.run_in_executor(None, ydl.download, [queue_links[user_id][index]])
         except DownloadError:
             await msg.edit("Sorry, There was a problem with that particular video")
             return
