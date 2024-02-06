@@ -222,16 +222,16 @@ async def single_download(client, callback: CallbackQuery):
 
 @Client.on_callback_query(filters.regex("^m"))
 async def multiple_download(client, callback: CallbackQuery):
+  user_id = callback.from_user.id
+  global queue_links
+  
     try:
         if user_id in active_list:
             await callback.message.edit("Sorry! You can download only one video at a time")
             return
         else:
             active_list.append(user_id)
-            
-            
-        global queue_links
-        user_id = callback.from_user.id
+          
 
         if user_id not in queue_links:
             queue_links.update({user_id: [callback.data.split('_', 1)[1]]})
