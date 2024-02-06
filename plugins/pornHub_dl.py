@@ -43,7 +43,7 @@ async def Download_Porn_Video(client, callback, link_msg):
     msg = await callback.message.reply_text(f"**{index+1}. Link:-** {queue_links[user_id][index]}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...", disable_web_page_preview=True)
 
     ydl_opts = {
-        "progress_hooks": [lambda d: download_progress_hook(d, msg, client)]
+        "progress_hooks": [lambda d: download_progress_hook(d, msg, queue_links[user_id][index])]
     }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -68,9 +68,11 @@ async def Download_Porn_Video(client, callback, link_msg):
         index = 0
         try:
             await callback.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅", reply_to_message_id=link_msg.id)
+            active_list.remove(user_id)
             return
         except:
             await callback.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅")
+            active_list.remove(user_id)
 
     else:
         index += 1
@@ -195,7 +197,7 @@ async def single_download(client, callback: CallbackQuery):
         active_list.append(user_id)
 
     ydl_opts = {
-        "progress_hooks": [lambda d: download_progress_hook(d, callback.message, client)]
+        "progress_hooks": [lambda d: download_progress_hook(d, callback.message, url)]
     }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -221,6 +223,13 @@ async def single_download(client, callback: CallbackQuery):
 @Client.on_callback_query(filters.regex("^m"))
 async def multiple_download(client, callback: CallbackQuery):
     try:
+        if user_id in active_list:
+            await callback.message.edit("Sorry! You can download only one video at a time")
+            return
+        else:
+            active_list.append(user_id)
+            
+            
         global queue_links
         user_id = callback.from_user.id
 
@@ -254,6 +263,8 @@ async def multiple_download(client, callback: CallbackQuery):
                 await Download_Porn_Video(client, callback, links_msg)
             except Exception as e:
                 print(e)
+        if user_id in active_list:
+            active_list.remove(user_id)
 
     except Exception as e:
         print('Error on line {}'.format(
