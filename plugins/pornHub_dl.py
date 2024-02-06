@@ -222,8 +222,8 @@ async def single_download(client, callback: CallbackQuery):
 
 @Client.on_callback_query(filters.regex("^m"))
 async def multiple_download(client, callback: CallbackQuery):
-  user_id = callback.from_user.id
-  global queue_links
+    user_id = callback.from_user.id
+    global queue_links
   
     try:
         if user_id in active_list:
