@@ -9,7 +9,7 @@ import youtube_dl
 import requests
 import uuid
 from config import Config
-from test import get_porn_thumbnail_url
+from helper.utils import get_porn_thumbnail_url
 
 active_list = []
 queue_links = {}
