@@ -8,6 +8,7 @@ import requests
 import uuid
 from config import Config
 
+active_list = []
 queue_links = {}
 index = 0
 
@@ -18,7 +19,7 @@ async def down_multiple(bot, update, link_msg):
     msg = await update.message.reply_text(f"**{index+1}. Link:-** {queue_links[user_id][index]}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...", disable_web_page_preview=True)
 
     # Set options for youtube-dl
-    thumbnail = await get_thumbnail_url(queue_links[user_id][index])
+    thumbnail = get_thumbnail_url(queue_links[user_id][index])
     ytdl_opts = {
         'format': 'best',
         'progress_hooks': [lambda d: download_progress_hook(d, msg, queue_links[user_id][index])],
@@ -32,25 +33,30 @@ async def down_multiple(bot, update, link_msg):
 
     # Generate a unique filename for the thumbnail
     unique_id = uuid.uuid4().hex
-    thumbnail_filename = f"thumbnail_{unique_id}.jpg"
+    if thumbnail:
+        thumbnail_filename = f"p_hub_thumbnail_{unique_id}.jpg"
 
-    # Download the thumbnail image
-    response = requests.get(thumbnail)
-    if response.status_code == 200:
-        with open(thumbnail_filename, 'wb') as f:
-            f.write(response.content)
-    await msg.edit("⚠️ Please Wait...\n\n**Trying to Upload**")
+        # Download the thumbnail image
+        response = requests.get(thumbnail)
+        if response.status_code == 200:
+            with open(thumbnail_filename, 'wb') as f:
+                f.write(response.content)
+                
+    await msg.edit("⚠️ Please Wait...\n\n**Trying to Upload....**")
+    
     for file in os.listdir('.'):
         if file.endswith(".mp4") or file.endswith('.mkv'):
             try:
-                await bot.send_video(chat_id=update.from_user.id, video=f"{file}", thumb=thumbnail_filename, caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
-                os.remove(f"{file}")
-                os.remove(thumbnail_filename)
-                break
+                if thumbnail:
+                    await bot.send_video(chat_id=update.from_user.id, video=f"{file}", thumb=thumbnail_filename, caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
+                    os.remove(f"{file}")
+                    os.remove(thumbnail_filename)
+                    break
+                else:
+                    await bot.send_video(chat_id=update.from_user.id, video=f"{file}", caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
+                    os.remove(f"{file}")
             except Exception as e:
                 print("⚠️  ERROR:- ", e)
-                await bot.send_video(chat_id=update.from_user.id, video=f"{file}", caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
-                os.remove(f"{file}")
                 break
         else:
             continue
@@ -62,29 +68,48 @@ async def down_multiple(bot, update, link_msg):
         index = 0
         try:
             await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅",  reply_to_message_id=link_msg.id)
+            active_list.remove(user_id)
             return
         except:
             await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅")
+            active_list.remove(user_id)
 
     else:
         index += 1
         await down_multiple(bot, update, queue_links[user_id][index])
+        
 
 @Client.on_message(filters.regex(pattern=r"https://\S+"))
 async def handle_yt_dl(bot: Client, cmd: Message):
-    await cmd.reply_text("**Do you want to download this file ?**", reply_to_message_id=cmd.id, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('🔻 Download 🔻', callback_data='http_link')], [InlineKeyboardButton('🖇️ Multiple Download🖇️', callback_data='multiple_http_link')]]))
+    await cmd.reply_text("**Do you want to download this file ?**", reply_to_message_id=cmd.id, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('🔻 Download 🔻', callback_data='http_link')], [InlineKeyboardButton('🖇️ Add Multiple Links 🖇️', callback_data='multiple_http_link')]]))
 
 
 @Client.on_callback_query(filters.regex('^http_link'))
 async def handle_single_download(bot: Client, update: CallbackQuery):
+    user_id = update.from_user.id
+
+    if user_id in active_list:
+        await update.message.edit("Sorry! You can download only one video at a time")
+        return
+    else:
+        active_list.append(user_id)
 
     http_link = update.message.reply_to_message.text
     await ytdl_downloads(bot, update, http_link)
+    active_list.remove(user_id)
     
 
 @Client.on_callback_query(filters.regex('^multiple_http_link'))
 async def handle_multiple_download(bot: Client, update: CallbackQuery):
     http_link = update.message.reply_to_message.text
+    
+    user_id = update.from_user.id
+
+    if user_id in active_list:
+        await update.message.edit("Sorry! You can download only one video at a time")
+        return
+    else:
+        active_list.append(user_id)
 
     try:
         global queue_links
