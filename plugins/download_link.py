@@ -8,7 +8,7 @@ from youtube_dl import DownloadError
 import youtube_dl
 import requests
 import uuid
-import asnycio
+import asyncio
 from config import Config
 from helper.utils import get_porn_thumbnail_url
 
