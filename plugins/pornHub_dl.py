@@ -1,11 +1,14 @@
-from pyrogram import Client
-from pyrogram.types import (CallbackQuery, InlineKeyboardButton,
-                            InlineKeyboardMarkup, InlineQuery,
-                            InlineQueryResultArticle, InputTextMessageContent,
-                            Message)
 from pornhub_api import PornhubApi
 from pornhub_api.backends.aiohttp import AioHttpBackend
 from pyrogram import Client, filters, StopPropagation
+from pyrogram.types import (InlineKeyboardButton,
+                            InlineKeyboardMarkup, InlineQuery,
+                            InlineQueryResultArticle, InputTextMessageContent,)
+
+
+btn1 = InlineKeyboardButton(
+    "Search Here", switch_inline_query_current_chat="",)
+btn2 = InlineKeyboardButton("Go Inline", switch_inline_query="")
 
 
 @Client.on_inline_query()
@@ -62,8 +65,7 @@ async def search(client, InlineQuery: InlineQuery):
             thumb_url=vid.thumb,
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("Watch online", url=vid.url),
-                InlineKeyboardButton(
-                    "Search Here", switch_inline_query_current_chat="",)
+                btn1
             ]]),
         ))
 
