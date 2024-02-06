@@ -109,6 +109,7 @@ def get_thumbnail_url(video_url):
         except Exception as e:
             return None
 
+
 def get_porn_thumbnail_url(video_url):
     ydl_opts = {
         'format': 'best',
@@ -123,6 +124,12 @@ def get_porn_thumbnail_url(video_url):
         except Exception as e:
             print(e)
             return None
+
+
+async def run_async(func, *args, **kwargs):
+    loop = asyncio.get_running_loop()
+    print("This is loop", loop)
+    return await loop.run_in_executor(None, func, *args, **kwargs)
 
 
 async def is_subscribed(bot, query):
@@ -161,9 +168,10 @@ async def ytdl_downloads(bot, update, http_link):
         'format': 'best',
         'progress_hooks': [lambda d: download_progress_hook(d, msg, http_link)],
     }
+    loop = asyncio.get_event_loop()
     with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
         try:
-            ydl.download([http_link])
+            await loop.run_in_executor(None, ydl.download, [http_link])
         except DownloadError:
             await msg.edit("Sorry, There was a problem with that particular video")
             return
@@ -180,7 +188,7 @@ async def ytdl_downloads(bot, update, http_link):
         if response.status_code == 200:
             with open(thumbnail_filename, 'wb') as f:
                 f.write(response.content)
-                
+
     for file in os.listdir('.'):
         if file.endswith(".mp4") or file.endswith('.mkv'):
             try:
