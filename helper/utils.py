@@ -18,6 +18,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 async def progress_for_pyrogram(current, total, ud_type, message, start):
     now = time.time()
     diff = now - start
@@ -85,40 +86,6 @@ def humanbytes(size):
     return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
 
 
-async def edit_msg(client, message, to_edit):
-    try:
-        await message.edit(to_edit)
-    except MessageNotModified:
-        pass
-    except FloodWait as e:
-        await asyncio.sleep(e.value)
-        pass
-    except TypeError:
-        pass
-
-
-async def download_progress_hook(d, message, client):
-    try:
-        if d['status'] == 'downloading':
-            current = d.get("_downloaded_bytes_str") or humanbytes(
-                int(d.get("downloaded_bytes", 1)))
-            total = d.get("_total_bytes_str") or d.get(
-                "_total_bytes_estimate_str")
-            file_name = d.get("filename")
-            eta = d.get('_eta_str', "N/A")
-            percent = d.get("_percent_str", "N/A")
-            speed = d.get("_speed_str", "N/A")
-            to_edit = (
-                f"<b><u>Downloading File</b></u> \n<b>File Name :</b> <code>{file_name}</code> \n"
-                f"<b>File Size :</b> <code>{total}</code> \n<b>Speed :</b> <code>{speed}</code> \n"
-                f"<b>ETA :</b> <code>{eta}</code> \n<i>Downloaded {current} out of {total}</i> (__{percent}__)"
-            )
-
-            await edit_msg(client, message, to_edit)
-    except Exception as e:
-        print(f"Error in download_progress_hook: {e}")
-        
-        
 def download_progress_hook(d, progress_message, link):
     if d['status'] == 'downloading':
         percentage = d['_percent_str']
@@ -129,21 +96,25 @@ def download_progress_hook(d, progress_message, link):
         progress_message.edit_text(message, disable_web_page_preview=True)
 
 
-async def get_thumbnail_url(video_url):
+def get_thumbnail_url(video_url):
     ydl_opts = {
         'format': 'best',
         'quiet': True,
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(video_url, download=False)
-        # print(info_dict)
-        thumbnail_url = info_dict['entries'][0]['thumbnails'][0]['url']
-        return thumbnail_url
+        try:
+            thumbnail_url = info_dict['entries'][0]['thumbnails'][0]['url']
+            return thumbnail_url
+        except Exception as e:
+            return None
+
 
 async def run_async(func, *args, **kwargs):
     loop = asyncio.get_running_loop()
     print("This is loop", loop)
     return await loop.run_in_executor(None, func, *args, **kwargs)
+
 
 async def is_subscribed(bot, query):
     try:
@@ -168,12 +139,11 @@ async def force_sub(bot, cmd):
     return await cmd.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
 
 
-
 async def ytdl_downloads(bot, update, http_link):
     msg = await update.message.edit(f"**Link:-** {http_link}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...", disable_web_page_preview=True)
 
     # Set options for youtube-dl
-    thumbnail = await get_thumbnail_url(http_link)
+    thumbnail = get_thumbnail_url(http_link)
     ytdl_opts = {
         'format': 'best',
         'progress_hooks': [lambda d: download_progress_hook(d, msg, http_link)],
@@ -185,27 +155,33 @@ async def ytdl_downloads(bot, update, http_link):
             await msg.edit("Sorry, There was a problem with that particular video")
             return
 
+    await msg.edit("⚠️ Please Wait...\n\n**Trying to Upload....**")
     # Generate a unique filename for the thumbnail
     unique_id = uuid.uuid4().hex
-    thumbnail_filename = f"thumbnail_{unique_id}.jpg"
 
-    # Download the thumbnail image
-    response = requests.get(thumbnail)
-    if response.status_code == 200:
-        with open(thumbnail_filename, 'wb') as f:
-            f.write(response.content)
-    await msg.edit("⚠️ Please Wait...\n\n**Trying to Upload**")
+    if thumbnail:
+        thumbnail_filename = f"thumbnail_{unique_id}.jpg"
+
+        # Download the thumbnail image
+        response = requests.get(thumbnail)
+        if response.status_code == 200:
+            with open(thumbnail_filename, 'wb') as f:
+                f.write(response.content)
+                
     for file in os.listdir('.'):
         if file.endswith(".mp4") or file.endswith('.mkv'):
             try:
-                await bot.send_video(chat_id=update.from_user.id, video=f"{file}", thumb=thumbnail_filename, caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
-                os.remove(f"{file}")
-                os.remove(thumbnail_filename)
-                break
+                if thumbnail:
+                    await bot.send_video(chat_id=update.from_user.id, video=f"{file}", thumb=thumbnail_filename, caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
+                    os.remove(f"{file}")
+                    os.remove(thumbnail_filename)
+                    break
+                else:
+                    await bot.send_video(chat_id=update.from_user.id, video=f"{file}", caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
+                    os.remove(f"{file}")
+
             except Exception as e:
-                print("⚠️  ERROR:- ", e)
-                await bot.send_video(chat_id=update.from_user.id, video=f"{file}", caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
-                os.remove(f"{file}")
+                await msg.edit(e)
                 break
         else:
             continue
