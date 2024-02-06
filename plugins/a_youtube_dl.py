@@ -1,6 +1,11 @@
 from __future__ import unicode_literals
 
-import os, requests, asyncio, math, time, wget
+import os
+import requests
+import asyncio
+import math
+import time
+import wget
 import re
 import sys
 from pyrogram import filters, Client
@@ -10,35 +15,27 @@ from youtube_search import YoutubeSearch
 from youtubesearchpython import SearchVideos
 from yt_dlp import YoutubeDL
 
-youtube_regex  = r"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})"
+youtube_regex = r"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})"
 
 
-@Client.on_message(filters.regex(youtube_regex))
-async def handle_youtube_video(client:Client, message:Message):
+@Client.on_message(filters.private & filters.regex(youtube_regex))
+async def handle_youtube_video(client: Client, message: Message):
     ms = await message.reply_text("**Please Wait...**", reply_to_message_id=message.id)
     await ms.edit(text="**What you want to do ?**", reply_markup=InlineKeyboardMarkup(
         [[InlineKeyboardButton('Video 📹', callback_data='ytdl_video')],
-        [InlineKeyboardButton('Music 🎵', callback_data='ytdl_music')]]
+         [InlineKeyboardButton('Music 🎵', callback_data='ytdl_music')]]
     ))
 
-@Client.on_callback_query(filters.regex('^ytdl_music'))
-async def song(client: Client, update:CallbackQuery):
-    user_id = update.from_user.id 
-    user_name = update.from_user.first_name 
 
-    # for searching through command
-    # query = ''
-    # for i in message.command[1:]:
-    #     query += ' ' + str(i)
-    # print(query)
-    
+@Client.on_callback_query(filters.regex('^ytdl_music'))
+async def song(client: Client, update: CallbackQuery):
     query = update.message.reply_to_message.text
     m = await update.message.edit(f"**ѕєαrchíng чσur ѕσng...!\n `{query}`**")
     ydl_opts = {"format": "bestaudio[ext=m4a]"}
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
-        title = results[0]["title"][:40]       
+        title = results[0]["title"][:40]
         thumbnail = results[0]["thumbnails"][0]
         thumb_name = f'thumb{title}.jpg'
         thumb = requests.get(thumbnail, allow_redirects=True)
@@ -46,13 +43,13 @@ async def song(client: Client, update:CallbackQuery):
         thumb_name = re.sub(r'[<>:"/\\|?*]', '', thumb_name)
         with open(thumb_name, 'wb') as f:
             f.write(thumb.content)
-        performer = f"[R͏ғᴛ]" 
+        performer = f"[R͏ғᴛ]"
         duration = results[0]["duration"]
         url_suffix = results[0]["url_suffix"]
         views = results[0]["views"]
     except Exception as e:
         return await m.edit("**Fᴏᴜɴᴅ Nᴏᴛʜɪɴɢ Pʟᴇᴀsᴇ Cᴏʀʀᴇᴄᴛ Tʜᴇ Sᴘᴇʟʟɪɴɢ Oʀ Cʜᴇᴄᴋ Tʜᴇ LIɴᴋ**")
-                
+
     await m.edit("**dσwnlσαdíng чσur ѕσng...!**")
     try:
         with YoutubeDL(ydl_opts) as ydl:
@@ -67,18 +64,19 @@ async def song(client: Client, update:CallbackQuery):
             secmul *= 60
         await update.message.reply_audio(
             audio_file,
-            caption=cap,            
+            caption=cap,
             quote=False,
             title=title,
             duration=dur,
             performer=performer,
             thumb=thumb_name,
             reply_to_message_id=update.message.reply_to_message.id
-        )            
+        )
         await m.delete()
     except Exception as e:
         await m.edit("**🚫 𝙴𝚁𝚁𝙾𝚁 🚫**")
-        print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+        print('Error on line {}'.format(
+            sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
         # print(e)
     try:
         os.remove(audio_file)
@@ -87,9 +85,23 @@ async def song(client: Client, update:CallbackQuery):
         print(e)
 
 
-
+# Modify the callback data to include quality options
 @Client.on_callback_query(filters.regex('^ytdl_video'))
 async def vsong(client: Client, update: CallbackQuery):
+    # Add more quality options as needed
+    quality_buttons = [
+            [InlineKeyboardButton('High', callback_data='quality_video:high')],
+            [InlineKeyboardButton('Medium', callback_data='quality_video:medium')],
+            [InlineKeyboardButton('Low', callback_data='quality_video:low')]
+    ]
+    await update.message.edit("**Select Video Quality:**", reply_markup=InlineKeyboardMarkup(quality_buttons))
+
+# Modify the callback function to handle quality selection
+
+
+@Client.on_callback_query(filters.regex('^quality_video'))
+async def vsong_quality(client: Client, update: CallbackQuery):
+    quality = update.data.split(':')[-1]
     urlissed = update.message.reply_to_message.text
     pablo = await update.message.edit(f"**Fɪɴᴅɪɴɢ Yᴏᴜʀ Vɪᴅᴇᴏ** `{urlissed}`")
     search = SearchVideos(f"{urlissed}", offset=1, mode="dict", max_results=1)
@@ -104,7 +116,7 @@ async def vsong(client: Client, update: CallbackQuery):
     url = mo
     sedlyf = wget.download(kekme)
     opts = {
-        "format": "best",
+        "format": f"bestvideo[ext=mp4]+bestaudio[ext=m4a]/best/{quality}",
         "addmetadata": True,
         "key": "FFmpegMetadata",
         "prefer_ffmpeg": True,
@@ -119,8 +131,9 @@ async def vsong(client: Client, update: CallbackQuery):
         with YoutubeDL(opts) as ytdl:
             ytdl_data = ytdl.extract_info(url, download=True)
     except Exception as e:
-        return await pablo.edit(f"**𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍 𝙵𝚊𝚒𝚕𝚎𝚍 𝙿𝚕𝚎𝚊𝚜𝚎 𝚃𝚛𝚢 𝙰𝚐𝚊𝚒𝚗..♥️** \n**Error :** `{str(e)}`")       
-    
+        print(e)
+        return await pablo.edit(f"**𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍 𝙵𝚊𝚒𝚕𝚎𝚍 𝙿𝚕𝚎𝚊𝚜𝚎 𝚃𝚛𝚢 𝙰𝚐𝚊𝚒𝚗..♥️**")
+
     file_stark = f"{ytdl_data['id']}.mp4"
     capy = f"""**TITLE :** [{thum}]({mo})\n**Rᴇǫᴜᴇsᴛᴇᴅ Bʏ :** {update.from_user.mention}"""
 
@@ -131,7 +144,7 @@ async def vsong(client: Client, update: CallbackQuery):
         file_name=str(ytdl_data["title"]),
         thumb=sedlyf,
         caption=capy,
-        supports_streaming=True,        
+        supports_streaming=True,
         reply_to_message_id=update.message.reply_to_message.id
     )
     await pablo.delete()
