@@ -125,12 +125,6 @@ def get_porn_thumbnail_url(video_url):
             return None
 
 
-async def run_async(func, *args, **kwargs):
-    loop = asyncio.get_running_loop()
-    print("This is loop", loop)
-    return await loop.run_in_executor(None, func, *args, **kwargs)
-
-
 async def is_subscribed(bot, query):
     try:
         user = await bot.get_chat_member(Config.AUTH_CHANNEL, query.from_user.id)
@@ -169,7 +163,7 @@ async def ytdl_downloads(bot, update, http_link):
     }
     with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
         try:
-            await run_async(ydl.download, [http_link])
+            ydl.download([http_link])
         except DownloadError:
             await msg.edit("Sorry, There was a problem with that particular video")
             return
