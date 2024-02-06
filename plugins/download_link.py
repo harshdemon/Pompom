@@ -3,7 +3,7 @@ import time
 import os
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from helper.utils import download_progress_hook, get_thumbnail_url, run_async, ytdl_downloads, progress_for_pyrogram
+from helper.utils import download_progress_hook, get_thumbnail_url, ytdl_downloads, progress_for_pyrogram
 from youtube_dl import DownloadError
 import youtube_dl
 import requests
@@ -11,7 +11,6 @@ import uuid
 from config import Config
 from helper.utils import get_porn_thumbnail_url
 
-active_list = []
 queue_links = {}
 index = 0
 
@@ -33,7 +32,7 @@ async def down_multiple(bot, update, link_msg):
     }
     with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
         try:
-            await run_async(ydl.download, [queue_links[user_id][index]])
+           ydl.download([queue_links[user_id][index]])
         except DownloadError:
             await msg.edit("Sorry, There was a problem with that particular video")
             return
@@ -74,12 +73,9 @@ async def down_multiple(bot, update, link_msg):
         queue_links.pop(user_id)
         index = 0
         try:
-            await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅",  reply_to_message_id=link_msg.id)
-            active_list.remove(user_id)
-            return
+            return await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅",  reply_to_message_id=link_msg.id)
         except:
             await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅")
-            active_list.remove(user_id)
 
     else:
         index += 1
@@ -93,17 +89,8 @@ async def handle_yt_dl(bot: Client, cmd: Message):
 
 @Client.on_callback_query(filters.regex('^http_link'))
 async def handle_single_download(bot: Client, update: CallbackQuery):
-    user_id = update.from_user.id
-
-    if user_id in active_list:
-        await update.message.edit("Sorry! You can download only one video at a time")
-        return
-    else:
-        active_list.append(user_id)
-
     http_link = update.message.reply_to_message.text
     await ytdl_downloads(bot, update, http_link)
-    active_list.remove(user_id)
 
 
 @Client.on_callback_query(filters.regex('^multiple_http_link'))
@@ -111,13 +98,6 @@ async def handle_multiple_download(bot: Client, update: CallbackQuery):
     http_link = update.message.reply_to_message.text
 
     user_id = update.from_user.id
-
-    if user_id in active_list:
-        await update.message.edit("Sorry! You can download only one video at a time")
-        return
-    else:
-        active_list.append(user_id)
-
     try:
         global queue_links
         user_id = update.from_user.id
