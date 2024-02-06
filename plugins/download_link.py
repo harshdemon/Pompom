@@ -1,4 +1,6 @@
-import sys, time, os
+import sys
+import time
+import os
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from helper.utils import download_progress_hook, get_thumbnail_url, run_async, ytdl_downloads, progress_for_pyrogram
@@ -7,6 +9,7 @@ import youtube_dl
 import requests
 import uuid
 from config import Config
+from test import get_porn_thumbnail_url
 
 active_list = []
 queue_links = {}
@@ -19,7 +22,11 @@ async def down_multiple(bot, update, link_msg):
     msg = await update.message.reply_text(f"**{index+1}. Link:-** {queue_links[user_id][index]}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...", disable_web_page_preview=True)
 
     # Set options for youtube-dl
-    thumbnail = get_thumbnail_url(queue_links[user_id][index])
+    if str(queue_links[user_id][index]).startswith("https://www.pornhub"):
+        thumbnail = get_porn_thumbnail_url(queue_links[user_id][index])
+    else:
+        thumbnail = get_thumbnail_url(queue_links[user_id][index])
+
     ytdl_opts = {
         'format': 'best',
         'progress_hooks': [lambda d: download_progress_hook(d, msg, queue_links[user_id][index])],
@@ -41,9 +48,9 @@ async def down_multiple(bot, update, link_msg):
         if response.status_code == 200:
             with open(thumbnail_filename, 'wb') as f:
                 f.write(response.content)
-                
+
     await msg.edit("⚠️ Please Wait...\n\n**Trying to Upload....**")
-    
+
     for file in os.listdir('.'):
         if file.endswith(".mp4") or file.endswith('.mkv'):
             try:
@@ -62,7 +69,7 @@ async def down_multiple(bot, update, link_msg):
             continue
 
     await msg.delete()
-    
+
     if queue_links[user_id][index] == queue_links[user_id][len(queue_links[user_id])-1]:
         queue_links.pop(user_id)
         index = 0
@@ -77,9 +84,9 @@ async def down_multiple(bot, update, link_msg):
     else:
         index += 1
         await down_multiple(bot, update, queue_links[user_id][index])
-        
 
-@Client.on_message(filters.regex(pattern=r"https://\S+"))
+
+@Client.on_message(filters.regex(pattern=r"(?=.*https://)(?!.*\bmega\b).*"))
 async def handle_yt_dl(bot: Client, cmd: Message):
     await cmd.reply_text("**Do you want to download this file ?**", reply_to_message_id=cmd.id, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('🔻 Download 🔻', callback_data='http_link')], [InlineKeyboardButton('🖇️ Add Multiple Links 🖇️', callback_data='multiple_http_link')]]))
 
@@ -97,12 +104,12 @@ async def handle_single_download(bot: Client, update: CallbackQuery):
     http_link = update.message.reply_to_message.text
     await ytdl_downloads(bot, update, http_link)
     active_list.remove(user_id)
-    
+
 
 @Client.on_callback_query(filters.regex('^multiple_http_link'))
 async def handle_multiple_download(bot: Client, update: CallbackQuery):
     http_link = update.message.reply_to_message.text
-    
+
     user_id = update.from_user.id
 
     if user_id in active_list:
