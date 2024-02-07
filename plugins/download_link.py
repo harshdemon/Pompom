@@ -147,7 +147,7 @@ async def handle_multiple_download(bot: Client, update: CallbackQuery):
                     links_msg = await update.message.reply_text(f"👤 <code>{update.from_user.first_name}</code> 🍁\n\n {links}")
                     break
                 else:
-                    await update.answer("⚠️ Please Send Valid Link !")
+                    await update.message.reply_text("⚠️ Please Send Valid Link !")
                     continue
 
         await update.message.reply_text("Downloading Started ✅\n\nPlease have patience while it's downloading it may take sometimes...")
