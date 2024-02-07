@@ -24,7 +24,7 @@ class Downloader:
     async def download_multiple(self, bot, update, link_msg, index=0):
         user_id = update.from_user.id
         msg = await update.message.reply_text(
-            f"**{index+1}. Link:-** {self.queue_links[user_id][index]}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...\n\n⚠️ **Remeber for multiple downloading the progress will not so you so don't think it's not downloading wait few minutes as it's downloading in background the time taken can aslo depends upon what you're downloading so give time to it.**",
+            f"**{index+1}. Link:-** {self.queue_links[user_id][index]}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...\n\n⚠️ **Please note that for multiple downloads, the progress may not be immediately apparent. Therefore, if it appears that nothing is downloading, please wait a few minutes as the downloads may be processing in the background. The duration of the download process can also vary depending on the content being downloaded, so we kindly ask for your patience.**",
             disable_web_page_preview=True
         )
 
