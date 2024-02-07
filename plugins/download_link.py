@@ -43,11 +43,12 @@ class Downloader:
                 'format': 'best',
                 'progress_hooks': [lambda d: download_progress_hook(d, msg, self.queue_links[user_id][index])],
             }
-            loop = asyncio.get_event_loop()
+            # loop = asyncio.get_event_loop()
 
             with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
                 try:
-                    await loop.run_in_executor(None, ydl.download, [self.queue_links[user_id][index]])
+                    # await loop.run_in_executor(None, ydl.download, [self.queue_links[user_id][index]])
+                    ydl.download([self.queue_links[user_id][index]])
                 except DownloadError:
                     await msg.edit("Sorry, There was a problem with that particular video")
                     return
