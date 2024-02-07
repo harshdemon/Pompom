@@ -29,27 +29,33 @@ class Downloader:
         )
 
         # Set options for youtube-dl
-        if str(self.queue_links[user_id][index]).startswith("https://www.pornhub"):
+        if self.queue_links[user_id][index].startswith("https://www.pornhub"):
             thumbnail = get_porn_thumbnail_url(self.queue_links[user_id][index])
         else:
             thumbnail = get_thumbnail_url(self.queue_links[user_id][index])
 
         ytdl_opts = {
             'format': 'best',
-            'progress_hooks': [lambda d: download_progress_hook(d, msg, self.queue_links[user_id][index])],
+            'progress_hooks': [lambda d: download_progress_hook(d, msg, self.queue_links[user_id][index])]
         }
-        # loop = asyncio.get_event_loop()
+
+        loop = asyncio.get_event_loop()
 
         with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
             try:
-                # await loop.run_in_executor(None, ydl.download, [self.queue_links[user_id][index]])
-                ydl.download([self.queue_links[user_id][index]])
-            except DownloadError:
-                await msg.edit("Sorry, There was a problem with that particular video")
+                await loop.run_in_executor(None, ydl.download, [self.queue_links[user_id][index]])
+            except youtube_dl.utils.DownloadError as e:
+                await msg.edit(f"Sorry, There was a problem with that particular video: {e}")
+                index += 1
+                if index < len(self.queue_links[user_id]):
+                    await self.download_multiple(bot, update, link_msg, index)
+                else:
+                    await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅", reply_to_message_id=link_msg.id)
                 return
 
         # Generate a unique filename for the thumbnail
         unique_id = uuid.uuid4().hex
+        thumbnail_filename = None
         if thumbnail:
             thumbnail_filename = f"p_hub_thumbnail_{unique_id}.jpg"
 
@@ -69,21 +75,14 @@ class Downloader:
                 except Exception as e:
                     print("⚠️  ERROR:- ", e)
                     break
-            else:
-                continue
 
         await msg.delete()
 
-        if self.queue_links[user_id][index] == self.queue_links[user_id][-1]:
-            self.queue_links.pop(user_id)
-            index = 0
-            try:
-                return await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅",  reply_to_message_id=link_msg.id)
-            except:
-                await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅")
-        else:
-            index += 1
+        index += 1
+        if index < len(self.queue_links[user_id]):
             await self.download_multiple(bot, update, link_msg, index)
+        else:
+            await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅", reply_to_message_id=link_msg.id)
 
     async def send_video(self, bot, update, file, thumbnail_filename, msg):
         user_id = update.from_user.id
@@ -142,7 +141,7 @@ async def handle_multiple_download(bot: Client, update: CallbackQuery):
                     for idx, link in enumerate(user):
                         links += f"{(idx+1)}. `{link}`\n"
 
-                    links_msg = await update.message.reply_text(f"👤 <code>{update.from_user.first_name}</code>\n\n {links}")
+                    links_msg = await update.message.reply_text(f"👤 <code>{update.from_user.first_name}</code> 🍁\n\n {links}")
                     break
                 else:
                     await update.answer("⚠️ Please Send Valid Link !")
