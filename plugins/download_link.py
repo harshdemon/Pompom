@@ -82,7 +82,10 @@ class Downloader:
         if index < len(self.queue_links[user_id]):
             await self.download_multiple(bot, update, link_msg, index)
         else:
-            await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅", reply_to_message_id=link_msg.id)
+            try:
+                await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅", reply_to_message_id=link_msg.id)
+            except:
+                await update.message.reply_text("**𝒜𝐿𝐿 𝐿𝐼𝒩𝒦𝒮 𝒟𝒪𝒲𝒩𝐿𝒪𝒜𝒟𝐸𝒟 𝒮𝒰𝒞𝒞𝐸𝒮𝒮𝐹𝒰𝐿𝐿𝒴 ✅**")
 
     async def send_video(self, bot, update, file, thumbnail_filename, msg):
         user_id = update.from_user.id
