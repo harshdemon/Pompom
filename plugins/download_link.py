@@ -20,7 +20,6 @@ from helper.utils import (
 class Downloader:
     def __init__(self):
         self.queue_links = {}
-
     async def download_multiple(self, bot, update, link_msg, index=0):
         user_id = update.from_user.id
         msg = await update.message.reply_text(
@@ -73,17 +72,19 @@ class Downloader:
 
         await msg.delete()
 
-        if self.queue_links[user_id][index] == self.queue_links[user_id][-1]:
+        # Check if all links have been downloaded
+        if index == len(self.queue_links[user_id]) - 1:
             self.queue_links.pop(user_id)
-            index = 0
             try:
                 return await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅",  reply_to_message_id=link_msg.id)
             except:
                 await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅")
         else:
+            # Continue downloading the next link
             index += 1
             await self.download_multiple(bot, update, link_msg, index)
 
+        
     async def send_video(self, bot, update, file, thumbnail_filename, msg):
         user_id = update.from_user.id
         if thumbnail_filename:
