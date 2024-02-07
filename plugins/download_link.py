@@ -46,7 +46,18 @@ class Downloader:
                 ydl.download([self.queue_links[user_id][index]])
             except DownloadError:
                 await msg.edit("Sorry, There was a problem with that particular video")
-                continue 
+                
+                if self.queue_links[user_id][index] == self.queue_links[user_id][-1]:
+                    
+                    self.queue_links.pop(user_id)
+                    index = 0
+                    try:
+                        return await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅",  reply_to_message_id=link_msg.id)
+                    except:
+                        await update.message.reply_text(f"ALL LINKS DOWNLOADED SUCCESSFULLY ✅")
+                else:                    
+                    index += 1
+                    await self.download_multiple(bot, update, link_msg, index)
 
         # Generate a unique filename for the thumbnail
         unique_id = uuid.uuid4().hex
