@@ -36,7 +36,7 @@ class Downloader:
 
         ytdl_opts = {
             'format': 'best',
-            'progress_hooks': [lambda d: download_progress_hook(d, msg, self.queue_links[user_id][index])]
+            # 'progress_hooks': [lambda d: download_progress_hook(d, msg, self.queue_links[user_id][index])]
         }
 
         # loop = asyncio.get_event_loop()
