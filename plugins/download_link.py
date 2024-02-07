@@ -46,7 +46,7 @@ class Downloader:
                 ydl.download([self.queue_links[user_id][index]])
             except DownloadError:
                 await msg.edit("Sorry, There was a problem with that particular video")
-                return
+                continue 
 
         # Generate a unique filename for the thumbnail
         unique_id = uuid.uuid4().hex
