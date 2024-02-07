@@ -1,19 +1,18 @@
 import math
 import os
 import time
+import asyncio
+import logging
+import requests
+import uuid
 from datetime import datetime
 from pytz import timezone
 from pyrogram.errors.exceptions import MessageNotModified, FloodWait, UserNotParticipant
 from pyrogram import enums
-import asyncio
-import logging
 from youtube_dl import DownloadError
 import youtube_dl
 from config import Config, Txt
-import requests
-import uuid
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -74,7 +73,6 @@ def convert(seconds):
 
 
 def humanbytes(size):
-    """Convert Bytes To Bytes So That Human Can Read It"""
     if not size:
         return ""
     power = 2 ** 10
@@ -92,8 +90,10 @@ def download_progress_hook(d, progress_message, link):
         speed = d['_speed_str']
         eta = d['_eta_str']
         message = f"**Link :- ** {link}\n\n Downloading: {percentage} | Speed: {speed} | ETA: {eta}"
-        # Update the progress message
-        progress_message.edit_text(message, disable_web_page_preview=True)
+        try:
+            progress_message.edit_text(message, disable_web_page_preview=True)
+        except:
+            pass
 
 
 def get_thumbnail_url(video_url):
@@ -118,7 +118,6 @@ def get_porn_thumbnail_url(video_url):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(video_url, download=False)
         try:
-            # print(info_dict)
             thumbnail_url = info_dict['thumbnail']
             return thumbnail_url
         except Exception as e:
@@ -128,7 +127,6 @@ def get_porn_thumbnail_url(video_url):
 
 async def run_async(func, *args, **kwargs):
     loop = asyncio.get_running_loop()
-    print("This is loop", loop)
     return await loop.run_in_executor(None, func, *args, **kwargs)
 
 
@@ -142,7 +140,6 @@ async def is_subscribed(bot, query):
     else:
         if user.status != enums.ChatMemberStatus.BANNED:
             return True
-
     return False
 
 
@@ -151,7 +148,6 @@ async def force_sub(bot, cmd):
     buttons = [[InlineKeyboardButton(
         text="📢 Cont. Owner to add you in Channel 📢", url="https://t.me/Snowball_Official")]]
     text = "**Sᴏʀʀy Dᴜᴅᴇ Yᴏᴜ'ʀᴇ Nᴏᴛ Jᴏɪɴᴇᴅ My Cʜᴀɴɴᴇʟ 😐. Sᴏ Pʟᴇᴀꜱᴇ Jᴏɪɴ Oᴜʀ Uᴩᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ Tᴏ Cᴄᴏɴᴛɪɴᴜᴇ**"
-
     return await cmd.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
 
 
@@ -177,13 +173,10 @@ async def ytdl_downloads(bot, update, http_link):
             return
 
     await msg.edit("⚠️ Please Wait...\n\n**Trying to Upload....**")
-    # Generate a unique filename for the thumbnail
     unique_id = uuid.uuid4().hex
 
     if thumbnail:
         thumbnail_filename = f"thumbnail_{unique_id}.jpg"
-
-        # Download the thumbnail image
         response = requests.get(thumbnail)
         if response.status_code == 200:
             with open(thumbnail_filename, 'wb') as f:
@@ -200,7 +193,6 @@ async def ytdl_downloads(bot, update, http_link):
                 else:
                     await bot.send_video(chat_id=update.from_user.id, video=f"{file}", caption=f"**📁 File Name:- `{file}`\n\nHere Is your Requested Video 🔥**\n\nPowered By - @{Config.BOT_USERNAME}", progress=progress_for_pyrogram, progress_args=("\n⚠️ Please Wait...\n\n**Uploading Started...**", msg, time.time()))
                     os.remove(f"{file}")
-
             except Exception as e:
                 await msg.edit(e)
                 break
