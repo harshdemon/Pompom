@@ -37,7 +37,7 @@
 
 * `DB_NAME`  - Your Database Name From Mongodb. 
 
-* `FORCE_SUB` - Your Force Sub Channel Username Without @
+* `FORCE_SUB` - Your Force Sub Channel Chat Id
 
 * `LOG_CHANNEL` - Bot Logs Sending Channel. If You Don't Need This To Remove This Variable In Your Server
 
