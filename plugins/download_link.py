@@ -24,7 +24,7 @@ class Downloader:
     async def download_multiple(self, bot, update, link_msg, index=0):
         user_id = update.from_user.id
         msg = await update.message.reply_text(
-            f"**{index+1}. Link:-** {self.queue_links[user_id][index]}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...",
+            f"**{index+1}. Link:-** {self.queue_links[user_id][index]}\n\nDownloading... Please Have Patience\n 𝙇𝙤𝙖𝙙𝙞𝙣𝙜...\n\n⚠️ **Remeber for multiple downloading the progress will not so you so don't think it's not downloading wait few minutes as it's downloading in background the time taken can aslo depends upon what you're downloading so give time to it.**",
             disable_web_page_preview=True
         )
 
@@ -39,11 +39,12 @@ class Downloader:
             'progress_hooks': [lambda d: download_progress_hook(d, msg, self.queue_links[user_id][index])]
         }
 
-        loop = asyncio.get_event_loop()
+        # loop = asyncio.get_event_loop()
 
         with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
             try:
-                await loop.run_in_executor(None, ydl.download, [self.queue_links[user_id][index]])
+                # await loop.run_in_executor(None, ydl.download, [self.queue_links[user_id][index]])
+                ydl.download([self.queue_links[user_id][index]])
             except youtube_dl.utils.DownloadError as e:
                 await msg.edit(f"Sorry, There was a problem with that particular video: {e}")
                 index += 1
