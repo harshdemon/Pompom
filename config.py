@@ -39,27 +39,27 @@ class Txt(object):
     # part of text configuration
     START_TXT = """<b>Hello {} 👋,
 ━━━━━━━━━━━━━━━━━━━━━
-This Bot Can Search PornHub
-Videos & Download Them For You
+Tʜɪs Bᴏᴛ Cᴀɴ Sᴇᴀʀᴄʜ PᴏʀɴHᴜʙ
+Vɪᴅᴇᴏs & Dᴏᴡɴʟᴏᴀᴅ Tʜᴇᴍ Fᴏʀ Yᴏᴜ
 
-Can Also Download Files through
-Link of Mega & YouTube
+Cᴀɴ Aʟsᴏ Dᴏᴡɴʟᴏᴀᴅ Fɪʟᴇs ᴛʜʀᴏᴜɢʜ
+Lɪɴᴋ ᴏғ Mᴇɢᴀ & YᴏᴜTᴜʙᴇ
 ━━━━━━━━━━━━━━━━━━━━━
-⚠️The Bot Contains 18+ Content
-So Kindly Access it with Your own
-Risk. Children Please Stay Away."
-We don't intend to spread Pørno-
--graphy here. It's just a bot for a"
-purpose as many of them wanted."
+⚠️Tʜᴇ Bᴏᴛ Cᴏɴᴛᴀɪɴs 𝟷𝟾+ Cᴏɴᴛᴇɴᴛ
+Sᴏ Kɪɴᴅʟʏ Aᴄᴄᴇss ɪᴛ ᴡɪᴛʜ Yᴏᴜʀ ᴏᴡɴ
+Rɪsᴋ. Cʜɪʟᴅʀᴇɴ Pʟᴇᴀsᴇ Sᴛᴀʏ Aᴡᴀʏ."
+Wᴇ ᴅᴏɴ'ᴛ ɪɴᴛᴇɴᴅ ᴛᴏ sᴘʀᴇᴀᴅ Pøʀɴᴏ-
+-ɢʀᴀᴘʜʏ ʜᴇʀᴇ.  Iᴛ's Jᴜsᴛ ᴀ ʙᴏᴛ ғᴏʀ ᴀ"
+ᴘᴜʀᴘᴏsᴇ ᴀs ᴍᴀɴʏ ᴏғ ᴛʜᴇᴍ ᴡᴀɴᴛᴇᴅ."
 ━━━━━━━━━━━━━━━━━━━━━
 Click The Buttons Below To Search
 """
 
     ABOUT_TXT = """<b>╭───────────⍟
 ├🤖 ᴍy ɴᴀᴍᴇ : {}
-├👨‍💻 Pʀᴏɢʀᴀᴍᴇʀ : <a href=https://t.me/Snowball_Official>𝓢𝓝𝓞𝓦𝓑𝓐𝓛𝓛</a>
-├👑 Instagram : <a href=https://www.instagram.com/ritesh6_>C-Insta</a> 
-├☃️ ꜰᴏᴜɴᴅᴇʀ ᴏꜰ : <a href=https://t.me/+HzGpLAZXTxoyYTNl>𝖱𝖮𝖮𝖥𝖨𝖵𝖤𝖱𝖲𝖤</a>
+├👨‍💻 Nᴇᴛᴡᴏʀᴋ : <a href=https://t.me/EquinoxNetwork>Eǫᴜɪɴᴏx Tᴇᴀᴍ</a>
+├👑Cʜᴀᴛ Gʀᴏᴜᴘ : <a href=https://t.me/Equinox_Chats>Eǫᴜɪɴᴏx~Cʜᴀᴛs</a> 
+├☃️ Sᴜᴘᴘᴏʀᴛ  : <a href=https://t.me/equinoxSupport>•Sᴜᴘᴘᴏʀᴛ•</a>
 ├📕 Lɪʙʀᴀʀy : <a href=https://github.com/pyrogram>Pyʀᴏɢʀᴀᴍ</a>
 ├✏️ Lᴀɴɢᴜᴀɢᴇ: <a href=https://www.python.org>Pyᴛʜᴏɴ 3</a>
 ├💾 Dᴀᴛᴀ Bᴀꜱᴇ: <a href=https://cloud.mongodb.com>Mᴏɴɢᴏ DB</a>
@@ -73,7 +73,7 @@ Tʜɪs Bᴏᴛ Wɪʟʟ Hᴇʟᴘ Yᴏᴜ Tᴏ Dᴏᴡɴʟᴏᴀᴅ Fᴏʟʟᴏ�
 ⊚ Mega
 ⊚ PornHub
 
-❗ 𝗔𝗻𝘆 𝗢𝘁𝗵𝗲𝗿 𝗛𝗲𝗹𝗽 𝗖𝗼𝗻𝘁𝗮𝗰𝘁 :- <a href=https://t.me/Snowball_official>𝑺𝑼𝑷𝑷𝑶𝑹𝑻</a>
+❗ 𝗔𝗻𝘆 𝗢𝘁𝗵𝗲𝗿 𝗛𝗲𝗹𝗽 𝗖𝗼𝗻𝘁𝗮𝗰𝘁 :- <a href=https://t.me/EquinoxSupport>𝑺𝑼𝑷𝑷𝑶𝑹𝑻</a>
 """
 
 
