@@ -21,12 +21,12 @@ async def start(client: Client, message: Message):
     user = message.from_user
     button = InlineKeyboardMarkup([[
         InlineKeyboardButton(
-            '⛅ Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/+HzGpLAZXTxoyYTNl'),
+            '•Uᴘᴅᴀᴛᴇs•', url='https://t.me/EquinoxNetwork'),
         InlineKeyboardButton(
-            '🌨️ Sᴜᴩᴩᴏʀᴛ', url='https://t.me/+mCdsJ7mjeBEyZWQ1')
+            '•Sᴜᴘᴘᴏʀᴛ•', url='https://t.me/equinoxSupport')
     ], [
-        InlineKeyboardButton('👨‍💻 Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('❗ Hᴇʟᴩ', callback_data='help')
+        InlineKeyboardButton('•Aʙᴏᴜᴛ•', callback_data='about'),
+        InlineKeyboardButton('•Hᴇʟᴘ•', callback_data='help')
     ],
         [
         InlineKeyboardButton("Search Porn Here",
@@ -49,12 +49,12 @@ async def cb_handler(client, query: CallbackQuery):
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton(
-                    '⛅ Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/+HzGpLAZXTxoyYTNl'),
+                    '• Uᴩᴅᴀᴛᴇꜱ •', url='https://t.me/EquinoxNetwork'),
                 InlineKeyboardButton(
-                    '🌨️ Sᴜᴩᴩᴏʀᴛ', url='https://t.me/+mCdsJ7mjeBEyZWQ1')
+                    '• Sᴜᴩᴩᴏʀᴛ •', url='https://t.me/equinoxSupport')
             ], [
-                InlineKeyboardButton('👨‍💻 Aʙᴏᴜᴛ', callback_data='about'),
-                InlineKeyboardButton('❗ Hᴇʟᴩ', callback_data='help')
+                InlineKeyboardButton('• Aʙᴏᴜᴛ •', callback_data='about'),
+                InlineKeyboardButton('• Hᴇʟᴩ •', callback_data='help')
             ],
                 [
                 InlineKeyboardButton("Search Porn Here",
