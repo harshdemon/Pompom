@@ -1,9 +1,9 @@
 {
-    "name": "Porn-Mega-Downloader-TG",
+    "name": "Porn---TG",
     "description": "Telegram Bot to download Porn videos & mega files through links",
     "logo": "https://telegra.ph/file/7b2f260b267b8487f39f4.mp4",
     "keywords": ["Porn-Mega-Downloader-TG", "Mongo DB"],    
-    "repository": "https://github.com/Snowball-0/Porn-Mega-Downloader-TG",
+    "repository": "https://github.com/Shivasengar12/Pompom",
     "success_url": "",
     "stack": "container",
     "env": {
