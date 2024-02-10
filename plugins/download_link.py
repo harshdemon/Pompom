@@ -112,7 +112,7 @@ class Downloader:
 
 downloader = Downloader()
 
-@Client.on_message(filters.regex(pattern=r"(?=.*https://)(?!.*\bmega\b).*") & filters.user(Config.ADMIN))
+@Client.on_message(filters.regex(pattern=r"(?=.*https://)(?!.*\bmega\b).*"))
 async def handle_yt_dl(bot: Client, cmd: Message):
     await cmd.reply_text("**Do you want to download this file ?**", reply_to_message_id=cmd.id, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('🔻 Download 🔻', callback_data='http_link')], [InlineKeyboardButton('🖇️ Add Multiple Links 🖇️', callback_data='multiple_http_link')]]))
 
