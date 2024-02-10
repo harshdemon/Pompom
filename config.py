@@ -62,8 +62,8 @@ Click The Buttons Below To Search
 ├☃️ Sᴜᴘᴘᴏʀᴛ  : <a href=https://t.me/equinoxSupport>•Sᴜᴘᴘᴏʀᴛ•</a>
 ├📕 Lɪʙʀᴀʀy : <a href=https://github.com/pyrogram>Pyʀᴏɢʀᴀᴍ</a>
 ├✏️ Lᴀɴɢᴜᴀɢᴇ: <a href=https://www.python.org>Pyᴛʜᴏɴ 3</a>
-├💾 Dᴀᴛᴀ Bᴀꜱᴇ: <a href=https://cloud.mongodb.com>Mᴏɴɢᴏ DB</a>
-├🌀 ᴍʏ ꜱᴇʀᴠᴇʀ : <a href=https://dashboard.heroku.com>Heroku</a>
+├💾 Mʏ Dᴇᴠ: <a href=https://t.me/NomoreTymWaste>»PᴀPᴀ«</a>
+├🌀 Eǫᴜɪɴᴏx Bᴏᴛs : <a href=https://t.me/Equinoxbots>Bᴏᴛs Hᴜʙ </a>
 ╰───────────────⍟ """
 
     HELP_TXT = """
