@@ -10,7 +10,7 @@ class Config(object):
     BOT_USERNAME = os.environ.get("BOT_USERNAME", "") # ⚠️ Required
    
     # database config
-    DB_URL  = os.environ.get("DB_URL","")  # ⚠️ Required
+    DB_URL  = os.environ.get("mongodb+srv://Krishna:pss968048@cluster0.4rfuzro.mongodb.net/?retryWrites=true&w=majority","")  # ⚠️ Required
  
     # other configs
     DOWNLOAD_LOCATION = "./DOWNLOADS"
